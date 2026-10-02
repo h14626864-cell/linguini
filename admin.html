@@ -1,0 +1,2106 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحه التحكم | Linguini</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#F4791E',
+          flame: '#D62B1F',
+          ember: '#7A1209',
+          cream: '#FFF8EE',
+          ink: '#2B1B12',
+          gold: '#FFC93C',
+          teal: '#1C6E78',
+          tealLight: '#3FA9B8',
+          maroon: '#3A0D08',
+        },
+        fontFamily: {
+          display: ['Lalezar', 'cursive'],
+          body: ['Tajawal', 'sans-serif'],
+        },
+        boxShadow: {
+          flameGlow: '0 8px 24px -6px rgba(214,43,31,.45)',
+          goldGlow: '0 6px 18px -4px rgba(255,201,60,.5)',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body { font-family: 'Tajawal', sans-serif; }
+  .font-display { font-family: 'Lalezar', cursive; }
+  ::selection { background: #F4791E; color: #FFF8EE; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #2B1B12; border-radius: 8px; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .tab-active { background: linear-gradient(135deg, #F4791E, #B23A1B); color: #FFF8EE; box-shadow: 0 8px 24px -6px rgba(244,121,30,.45); }
+  .tab-inactive { background: #FFF8EE; color: #2B1B12; }
+  .tab-inactive:hover { background: #FFE7C2; }
+  .input-base { width: 100%; background: #FFF8EE; border: 1.5px solid rgba(43,27,18,.12); border-radius: .75rem; padding: .6rem .9rem; font-size: .95rem; transition: all .15s; }
+  .input-base:focus { outline: none; border-color: #F4791E; box-shadow: 0 0 0 3px rgba(244,121,30,.12); }
+  .btn-primary { background: linear-gradient(135deg, #F4791E, #B23A1B); color: #FFF8EE; padding: .65rem 1.5rem; border-radius: .75rem; font-weight: 700; transition: transform .15s; box-shadow: 0 8px 24px -6px rgba(244,121,30,.45); }
+  .btn-primary:hover { transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-ghost { background: #FFF8EE; color: #2B1B12; padding: .55rem 1.2rem; border-radius: .75rem; font-weight: 700; border: 1.5px solid rgba(43,27,18,.12); transition: all .15s; }
+  .btn-ghost:hover { background: #FFE7C2; }
+  .card { background: #FFFFFF; border: 1px solid rgba(43,27,18,.07); border-radius: 1rem; box-shadow: 0 4px 20px -8px rgba(43,27,18,.12); }
+  .stat-card { background: linear-gradient(135deg, #FFF8EE, #FFFFFF); border: 1px solid rgba(43,27,18,.07); }
+  .modal-bg { background: rgba(43,27,18,.55); backdrop-filter: blur(6px); }
+  .badge-restaurant-reply { background: linear-gradient(135deg, #F4791E, #B23A1B); color: #FFF8EE; }
+  .fade-in { animation: fadeIn .25s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .toast-in { animation: toastIn .3s ease forwards; }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+  .spin { animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body class="bg-cream text-ink antialiased min-h-screen">
+
+<!-- ============ HEADER ============ -->
+<header class="sticky top-0 z-40 bg-white/85 backdrop-blur-xl border-b border-ink/10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+    <div class="flex items-center gap-3">
+      <div class="h-11 w-11 rounded-2xl bg-gradient-to-br from-flame to-ember flex items-center justify-center text-cream text-2xl shadow-flameGlow">🔥</div>
+      <div>
+        <h1 class="font-display text-2xl text-flame leading-none">Linguini</h1>
+        <p class="text-xs text-ink/55">لوحه التحكم</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <a href="menu.html" target="_blank" class="btn-ghost text-sm flex items-center gap-1.5">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/></svg>
+        عرض المنيو
+      </a>
+      <button onclick="logout()" id="logout-btn" class="btn-ghost text-sm flex items-center gap-1.5">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        خروج
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ LOGIN SCREEN ============ -->
+<div id="login-screen" class="fixed inset-0 z-50 modal-bg flex items-center justify-center p-4">
+  <div class="card p-8 w-full max-w-md fade-in">
+    <div class="text-center mb-6">
+      <div class="h-16 w-16 mx-auto rounded-2xl bg-gradient-to-br from-flame to-ember flex items-center justify-center text-cream text-3xl shadow-flameGlow mb-3">🔥</div>
+      <h2 class="font-display text-3xl text-flame">تسجيل الدخول</h2>
+      <p class="text-ink/55 text-sm mt-1">لوحه تحكم Linguini</p>
+    </div>
+    <form onsubmit="doLogin(event)" class="space-y-4">
+      <div>
+        <label class="block text-sm font-bold mb-1.5">كلمه المرور</label>
+        <input id="login-password" type="password" class="input-base" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="btn-primary w-full">دخول</button>
+      <p id="login-error" class="text-flame text-sm text-center hidden"></p>
+    </form>
+    <p class="text-xs text-ink/40 text-center mt-4">الكلمه الافتراضيه: <b class="text-ink/70">admin123</b></p>
+  </div>
+</div>
+
+<!-- ============ MAIN APP ============ -->
+<div id="app" class="hidden max-w-7xl mx-auto px-4 sm:px-6 py-6">
+
+  <!-- Tabs -->
+  <nav class="flex gap-2 mb-6 overflow-x-auto no-scrollbar">
+    <button data-tab="stats" onclick="switchTab('stats')" class="tab-btn shrink-0 px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+      الإحصاءيات
+    </button>
+    <button data-tab="orders" onclick="switchTab('orders')" class="tab-btn shrink-0 px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2 relative">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      الطلبات
+      <span id="orders-badge" class="hidden absolute -top-1 -left-1 h-5 min-w-5 px-1 rounded-full bg-flame text-cream text-[10px] font-black flex items-center justify-center"></span>
+    </button>
+    <button data-tab="categories" onclick="switchTab('categories')" class="tab-btn shrink-0 px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      الأقسام
+    </button>
+    <button data-tab="products" onclick="switchTab('products')" class="tab-btn shrink-0 px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7L12 3 4 7m16 0l-8 4m8-0v10l-8 4m8-14L12 3 4 7m0 0v10l8 4m-8-14l8 4m0 0v10"/></svg>
+      المنتجات
+    </button>
+    <button data-tab="reviews" onclick="switchTab('reviews')" class="tab-btn shrink-0 px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2 relative">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      التقييمات
+      <span id="reviews-badge" class="hidden absolute -top-1 -left-1 h-5 min-w-5 px-1 rounded-full bg-flame text-cream text-[10px] font-black flex items-center justify-center"></span>
+    </button>
+    <button data-tab="social" onclick="switchTab('social')" class="tab-btn shrink-0 px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      سوشيال ميديا
+    </button>
+    <button data-tab="settings" onclick="switchTab('settings')" class="tab-btn shrink-0 px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      الاعدادات
+    </button>
+  </nav>
+
+  <!-- =================== STATS TAB (first) =================== -->
+  <section id="tab-stats" class="tab-panel">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+      <div class="stat-card rounded-2xl p-5 border">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-xs font-bold text-ink/55">إجمالي الطلبات</p>
+          <div class="h-9 w-9 rounded-xl bg-flame/15 flex items-center justify-center text-flame">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+        </div>
+        <p id="stat-total-orders" class="font-display text-3xl text-ink">0</p>
+      </div>
+      <div class="stat-card rounded-2xl p-5 border">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-xs font-bold text-ink/55">إجمالي المبيعات</p>
+          <div class="h-9 w-9 rounded-xl bg-gold/20 flex items-center justify-center text-gold">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+        </div>
+        <p id="stat-total-revenue" class="font-display text-3xl text-flame">0 ج.م</p>
+      </div>
+      <div class="stat-card rounded-2xl p-5 border">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-xs font-bold text-ink/55">الأقسام</p>
+          <div class="h-9 w-9 rounded-xl bg-teal/15 flex items-center justify-center text-teal">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          </div>
+        </div>
+        <p id="stat-total-cats" class="font-display text-3xl text-ink">0</p>
+      </div>
+      <div class="stat-card rounded-2xl p-5 border">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-xs font-bold text-ink/55">المنتجات</p>
+          <div class="h-9 w-9 rounded-xl bg-primary/15 flex items-center justify-center text-primary">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7L12 3 4 7m16 0l-8 4m8-0v10l-8 4m8-14L12 3 4 7m0 0v10l8 4m-8-14l8 4m0 0v10"/></svg>
+          </div>
+        </div>
+        <p id="stat-total-prods" class="font-display text-3xl text-ink">0</p>
+      </div>
+    </div>
+
+    <!-- Viewer Stats -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+      <div class="stat-card rounded-2xl p-5 border bg-gradient-to-br from-emerald-50 to-white">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-xs font-bold text-ink/55">متصلين الآن</p>
+          <div class="h-9 w-9 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-600">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+        </div>
+        <p id="stat-online-now" class="font-display text-3xl text-emerald-600">0</p>
+        <p class="text-[10px] text-ink/40 mt-1">بيانات الحركه الحقيقيه</p>
+      </div>
+      <div class="stat-card rounded-2xl p-5 border bg-gradient-to-br from-blue-50 to-white">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-xs font-bold text-ink/55">إجمالي الزيارات</p>
+          <div class="h-9 w-9 rounded-xl bg-blue-500/15 flex items-center justify-center text-blue-600">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+        </div>
+        <p id="stat-total-visits" class="font-display text-3xl text-blue-600">0</p>
+        <p class="text-[10px] text-ink/40 mt-1">كل مره حد فتح المنيو</p>
+      </div>
+      <div class="stat-card rounded-2xl p-5 border bg-gradient-to-br from-purple-50 to-white">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-xs font-bold text-ink/55">نشط حالياً</p>
+          <div class="h-9 w-9 rounded-xl bg-purple-500/15 flex items-center justify-center text-purple-600">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+        </div>
+        <p id="stat-active-now" class="font-display text-3xl text-purple-600">0</p>
+        <p class="text-[10px] text-ink/40 mt-1">تفاعلوا في آخر 5 دقائق</p>
+      </div>
+    </div>
+
+    <div class="space-y-6">
+      
+      <div class="card p-6">
+        <h3 class="font-display text-xl text-ink mb-4">أكثر المنتجات طلباً</h3>
+        <div id="stat-top-products" class="space-y-3"></div>
+      </div>
+      <div class="card p-6">
+        <h3 class="font-display text-xl text-ink mb-4">المبيعات حسب القسم</h3>
+        <div id="stat-sales-by-cat" class="space-y-3"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== CATEGORIES TAB =================== -->
+  <section id="tab-categories" class="tab-panel hidden">
+    <div class="space-y-6">
+      <!-- Form -->
+      <div class="card p-5 sm:p-6">
+        <h2 class="font-display text-2xl text-flame mb-1">إضافه قسم جديد</h2>
+        <p class="text-xs text-ink/55 mb-5">أضف قسم للمنيو (مشروبات، حلويات...)</p>
+        <form id="category-form" onsubmit="saveCategory(event)" class="space-y-4">
+          <div>
+            <label class="block text-sm font-bold mb-1.5">اسم القسم *</label>
+            <input id="cat-name" type="text" class="input-base" placeholder="مثال: مشروبات ساخنة" required>
+          </div>
+          <div>
+            <label class="block text-sm font-bold mb-1.5">صوره القسم</label>
+            <div class="grid grid-cols-2 gap-2 mb-2">
+              <button type="button" id="cat-mode-upload" onclick="setCatImageMode('upload')" class="px-3 py-2 rounded-lg text-sm font-bold border-2 border-flame bg-flame/10 text-flame">رفع من الجهاز</button>
+              <button type="button" id="cat-mode-link" onclick="setCatImageMode('link')" class="px-3 py-2 rounded-lg text-sm font-bold border-2 border-ink/15 bg-white text-ink/60">لينك الصوره</button>
+            </div>
+            <div id="cat-upload-wrap" class="space-y-2">
+              <label class="block cursor-pointer">
+                <input id="cat-file" type="file" accept="image/*" class="hidden" onchange="previewCatFile(event)">
+                <div id="cat-file-zone" class="border-2 border-dashed border-ink/20 rounded-xl p-6 text-center hover:border-flame hover:bg-flame/5 transition-colors">
+                  <div class="text-3xl mb-1">📤</div>
+                  <p class="text-sm font-bold text-ink/70">اضغط لاختيار صوره</p>
+                  <p class="text-xs text-ink/40">PNG, JPG, WEBP</p>
+                </div>
+              </label>
+            </div>
+            <div id="cat-link-wrap" class="hidden">
+              <input id="cat-link" type="url" class="input-base" placeholder="https://example.com/image.jpg" oninput="previewCatLink()">
+            </div>
+            <div id="cat-preview-wrap" class="hidden mt-2">
+              <p class="text-xs text-ink/55 mb-1">معاينه:</p>
+              <img id="cat-preview" class="w-full h-32 object-cover rounded-xl border border-ink/10" alt="">
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button type="submit" id="cat-submit" class="btn-primary flex-1">إضافه القسم</button>
+            <button type="button" onclick="resetCategoryForm()" class="btn-ghost">تفريغ</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- List (vertical stack, full width) -->
+      <div class="card p-5 sm:p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-display text-2xl text-ink">الأقسام الحالية</h2>
+          <span id="cat-count" class="text-sm bg-ink/5 px-3 py-1 rounded-full font-bold">0</span>
+        </div>
+        <div id="cat-list" class="space-y-3">
+          <div class="text-center py-12 text-ink/40">
+            <div class="text-4xl mb-2">📭</div>
+            <p>جاري التحميل...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== PRODUCTS TAB =================== -->
+  <section id="tab-products" class="tab-panel hidden">
+    <div class="space-y-6">
+      <!-- Form -->
+      <div class="card p-5 sm:p-6">
+        <h2 class="font-display text-2xl text-flame mb-1">إضافه صنف جديد</h2>
+        <p class="text-xs text-ink/55 mb-5">أضف المنتجات للأقسام</p>
+        <form id="product-form" onsubmit="saveProduct(event)" class="space-y-4">
+          <div>
+            <label class="block text-sm font-bold mb-1.5">اسم الصنف *</label>
+            <input id="prod-name" type="text" class="input-base" placeholder="مثال: برجر لحم مشوي" required>
+          </div>
+          <div>
+            <label class="block text-sm font-bold mb-1.5">الوصف</label>
+            <textarea id="prod-desc" rows="2" class="input-base resize-none" placeholder="وصف مختصر للصنف"></textarea>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-sm font-bold mb-1.5">القسم *</label>
+              <select id="prod-cat" class="input-base" required></select>
+            </div>
+            <div>
+              <label class="block text-sm font-bold mb-1.5">السعر الأساسي *</label>
+              <input id="prod-price" type="number" min="0" step="0.01" class="input-base" placeholder="0" required>
+            </div>
+          </div>
+
+          <!-- Sizes -->
+          <div class="bg-cream/50 rounded-xl p-3 border border-ink/8">
+            <label class="flex items-center gap-2 cursor-pointer mb-2">
+              <input id="prod-has-sizes" type="checkbox" class="h-4 w-4 accent-flame" onchange="toggleSizes()">
+              <span class="font-bold text-sm">الأحجام (اختياري)</span>
+            </label>
+            <div id="sizes-wrap" class="hidden space-y-2">
+              <div id="sizes-list"></div>
+              <button type="button" onclick="addSize()" class="text-sm font-bold text-flame hover:underline">+ إضافه حجم</button>
+            </div>
+          </div>
+
+          <!-- Additions -->
+          <div class="bg-cream/50 rounded-xl p-3 border border-ink/8">
+            <label class="flex items-center gap-2 cursor-pointer mb-2">
+              <input id="prod-has-additions" type="checkbox" class="h-4 w-4 accent-flame" onchange="toggleAdditions()">
+              <span class="font-bold text-sm">الإضافات (اختياري)</span>
+            </label>
+            <div id="additions-wrap" class="hidden space-y-2">
+              <div id="additions-list"></div>
+              <button type="button" onclick="addAddition()" class="text-sm font-bold text-flame hover:underline">+ إضافه إضافه</button>
+            </div>
+          </div>
+
+          <!-- Image -->
+          <div>
+            <label class="block text-sm font-bold mb-1.5">صوره الصنف</label>
+            <div class="grid grid-cols-2 gap-2 mb-2">
+              <button type="button" id="prod-mode-upload" onclick="setProdImageMode('upload')" class="px-3 py-2 rounded-lg text-sm font-bold border-2 border-flame bg-flame/10 text-flame">رفع من الجهاز</button>
+              <button type="button" id="prod-mode-link" onclick="setProdImageMode('link')" class="px-3 py-2 rounded-lg text-sm font-bold border-2 border-ink/15 bg-white text-ink/60">لينك الصوره</button>
+            </div>
+            <div id="prod-upload-wrap">
+              <label class="block cursor-pointer">
+                <input id="prod-file" type="file" accept="image/*" class="hidden" onchange="previewProdFile(event)">
+                <div id="prod-file-zone" class="border-2 border-dashed border-ink/20 rounded-xl p-6 text-center hover:border-flame hover:bg-flame/5 transition-colors">
+                  <div class="text-3xl mb-1">📤</div>
+                  <p class="text-sm font-bold text-ink/70">اضغط لاختيار صوره</p>
+                  <p class="text-xs text-ink/40">PNG, JPG, WEBP</p>
+                </div>
+              </label>
+            </div>
+            <div id="prod-link-wrap" class="hidden">
+              <input id="prod-link" type="url" class="input-base" placeholder="https://example.com/image.jpg" oninput="previewProdLink()">
+            </div>
+            <div id="prod-preview-wrap" class="hidden mt-2">
+              <p class="text-xs text-ink/55 mb-1">معاينه:</p>
+              <img id="prod-preview" class="w-full h-32 object-cover rounded-xl border border-ink/10" alt="">
+            </div>
+          </div>
+
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input id="prod-popular" type="checkbox" class="h-4 w-4 accent-flame">
+            <span class="font-bold text-sm">منتج رائج (يظهر في "الأكثر طلباً")</span>
+          </label>
+
+          <div class="flex gap-2">
+            <button type="submit" id="prod-submit" class="btn-primary flex-1">إضافه الصنف</button>
+            <button type="button" onclick="resetProductForm()" class="btn-ghost">تفريغ</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- List -->
+      <div class="card p-5 sm:p-6">
+        <div class="flex items-center justify-between gap-3 mb-4 flex-wrap">
+          <h2 class="font-display text-2xl text-ink">المنتجات</h2>
+          <div class="flex gap-2 items-center">
+            <select id="prod-filter-cat" onchange="renderProducts()" class="input-base py-2 text-sm w-auto">
+              <option value="">كل الأقسام</option>
+            </select>
+            <input id="prod-search" oninput="renderProducts()" type="text" class="input-base py-2 text-sm w-auto" placeholder="بحث...">
+          </div>
+        </div>
+        <div id="prod-list" class="space-y-3">
+          <div class="text-center py-12 text-ink/40">
+            <div class="text-4xl mb-2">📭</div>
+            <p>جاري التحميل...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== ORDERS TAB =================== -->
+  <section id="tab-orders" class="tab-panel hidden">
+    <div class="card p-6">
+      <div class="flex items-center justify-between gap-3 mb-4 flex-wrap">
+        <h2 class="font-display text-2xl text-ink">الطلبات</h2>
+        
+      </div>
+      <div id="orders-list" class="space-y-3">
+        <div class="text-center py-12 text-ink/40">
+          <div class="text-4xl mb-2">📭</div>
+          <p>جاري التحميل...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== REVIEWS TAB =================== -->
+  <section id="tab-reviews" class="tab-panel hidden">
+    <div class="card p-6">
+      <div class="flex items-center justify-between gap-3 mb-4 flex-wrap">
+        <h2 class="font-display text-2xl text-ink">تقييمات العملاء</h2>
+        <div class="flex items-center gap-2 flex-wrap">
+          <select id="rev-filter-prod" onchange="renderReviews()" class="input-base py-2 text-sm w-auto">
+            <option value="">كل المنتجات</option>
+          </select>
+          <select id="rev-filter-stars" onchange="renderReviews()" class="input-base py-2 text-sm w-auto">
+            <option value="">كل النجوم</option>
+            <option value="5">5 نجوم</option>
+            <option value="4">4 نجوم</option>
+            <option value="3">3 نجوم</option>
+            <option value="2">2 نجوم</option>
+            <option value="1">نجمة واحدة</option>
+          </select>
+        </div>
+      </div>
+      <div id="reviews-list" class="space-y-3">
+        <div class="text-center py-12 text-ink/40">
+          <div class="text-4xl mb-2">⭐</div>
+          <p>جاري التحميل...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== SOCIAL MEDIA TAB =================== -->
+  <section id="tab-social" class="tab-panel hidden">
+    <div class="space-y-6">
+      <!-- Form -->
+      <div class="card p-5 sm:p-6">
+        <h2 class="font-display text-2xl text-flame mb-1">روابط السوشيال ميديا</h2>
+        <p class="text-xs text-ink/55 mb-5">الأيقونات هتظهر جوه المستطيل البرتقاني فوق المنيو</p>
+        <form id="social-form" onsubmit="saveSocial(event)" class="space-y-4">
+          <!-- Facebook -->
+          <div>
+            <label class="block text-sm font-bold mb-1.5 flex items-center gap-2">
+              <svg class="h-4 w-4 text-flame" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/></svg>
+              فيسبوك
+            </label>
+            <input id="social-facebook" type="url" class="input-base" placeholder="https://facebook.com/yourpage" oninput="previewSocial()">
+          </div>
+          <!-- Instagram -->
+          <div>
+            <label class="block text-sm font-bold mb-1.5 flex items-center gap-2">
+              <svg class="h-4 w-4 text-flame" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 1.802c-2.67 0-2.986.01-4.04.059-.976.045-1.505.207-1.858.344-.466.182-.8.398-1.15.748-.35.35-.566.684-.748 1.15-.137.353-.3.882-.344 1.857-.048 1.055-.058 1.37-.058 4.04 0 2.67.01 2.986.058 4.04.045.976.207 1.505.344 1.858.182.466.399.8.748 1.15.35.35.684.566 1.15.748.353.137.882.3 1.857.344 1.055.048 1.37.058 4.04.058s2.985-.01 4.04-.058c.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.684.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.04 0-2.67-.01-2.986-.058-4.04-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 0 0-.748-1.15 3.098 3.098 0 0 0-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.055-.048-1.37-.058-4.04-.058zm0 3.063A5.135 5.135 0 1 1 12 16.135 5.135 5.135 0 0 1 12 6.865zm0 8.468A3.333 3.333 0 1 0 12 8.667a3.333 3.333 0 0 0 0 6.666zm5.338-9.87a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4z"/></svg>
+              انستجرام
+            </label>
+            <input id="social-instagram" type="url" class="input-base" placeholder="https://instagram.com/yourpage" oninput="previewSocial()">
+          </div>
+          <!-- TikTok -->
+          <div>
+            <label class="block text-sm font-bold mb-1.5 flex items-center gap-2">
+              <svg class="h-4 w-4 text-flame" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.84-.1z"/></svg>
+              تيك توك
+            </label>
+            <input id="social-tiktok" type="url" class="input-base" placeholder="https://tiktok.com/@yourpage" oninput="previewSocial()">
+          </div>
+          <button type="submit" class="btn-primary w-full">حفظ الروابط</button>
+        </form>
+      </div>
+
+      <!-- WhatsApp + Preview -->
+      <div class="space-y-6">
+        <!-- WhatsApp toggle -->
+        <div class="card p-6">
+          <h2 class="font-display text-2xl text-flame mb-1">زرار واتساب</h2>
+          <p class="text-xs text-ink/55 mb-5">لو مفعّل، ه يظهر زرار واتساب عائم شمال تحت في المنيو</p>
+          <div class="space-y-4">
+            <label class="flex items-center gap-3 cursor-pointer p-3 rounded-xl bg-cream/50 border border-ink/8">
+              <input id="social-wa-enabled" type="checkbox" class="h-5 w-5 accent-flame" onchange="onWaToggle()">
+              <span class="font-bold text-sm flex-1">تفعيل زرار الواتساب</span>
+              <span id="wa-status" class="text-xs font-bold px-2 py-1 rounded-full bg-ink/5 text-ink/50">معطل</span>
+            </label>
+            <div id="wa-number-wrap" class="hidden">
+              <label class="block text-sm font-bold mb-1.5">رقم الواتساب *</label>
+              <input id="social-wa-number" type="tel" dir="ltr" class="input-base text-left" placeholder="201012345678" oninput="previewSocial()">
+              <p class="text-xs text-ink/45 mt-1">اكتب رقمك بصيغة دولية بدون + أو مسافات (مثال: 201012345678)</p>
+            </div>
+            <button onclick="saveWhatsapp()" class="btn-primary w-full">حفظ إعدادات الواتساب</button>
+          </div>
+        </div>
+
+        <!-- Live preview -->
+        <div class="card p-6">
+          <h3 class="font-bold text-sm mb-3">معاينة المستطيل البرتقاني</h3>
+          <div class="relative rounded-2xl overflow-hidden" style="background: linear-gradient(135deg, #F4791E 0%, #E56112 60%, #B23A1B 100%); aspect-ratio: 848 / 478;">
+            <div class="absolute inset-0" style="background: linear-gradient(135deg, rgba(244,121,30,0.72) 0%, rgba(178,58,27,0.82) 100%);"></div>
+            <div class="relative h-full flex items-center justify-center gap-4 px-4">
+              <div class="h-12 w-px bg-cream/25 shrink-0"></div>
+              <div class="text-right">
+                <h1 class="font-display text-xl sm:text-2xl text-cream drop-shadow-md whitespace-nowrap">طعم نار... خدمة دمار</h1>
+                <p class="text-cream/90 text-xs sm:text-sm mt-1 whitespace-nowrap">توصيل سريع وعروض جبارة</p>
+                <div id="social-preview" class="flex items-center gap-2 justify-center mt-3"></div>
+              </div>
+            </div>
+          </div>
+          <p class="text-xs text-ink/45 mt-2 text-center">الأيقونات بتظهر تحت الكلام في المستطيل</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== SETTINGS TAB =================== -->
+  <section id="tab-settings" class="tab-panel hidden">
+    <div class="space-y-6">
+      <!-- Restaurant Info -->
+      <div class="card p-5 sm:p-6">
+        <h2 class="font-display text-2xl text-flame mb-1">معلومات المطعم</h2>
+        <p class="text-xs text-ink/55 mb-5">غيّر اسم المطعم واللوجو اللي بيظهر في المنيو</p>
+        <form id="settings-restaurant-form" onsubmit="saveRestaurantSettings(event)" class="space-y-4">
+          <div>
+            <label class="block text-sm font-bold mb-1.5">اسم المطعم</label>
+            <input id="setting-restaurant-name" type="text" class="input-base" placeholder="مثال: Linguini" required>
+          </div>
+          <div>
+            <label class="block text-sm font-bold mb-1.5">لوجو المطعم</label>
+            <div class="grid grid-cols-2 gap-2 mb-2">
+              <button type="button" id="logo-mode-upload" onclick="setLogoImageMode('upload')" class="px-3 py-2 rounded-lg text-sm font-bold border-2 border-flame bg-flame/10 text-flame">رفع من الجهاز</button>
+              <button type="button" id="logo-mode-link" onclick="setLogoImageMode('link')" class="px-3 py-2 rounded-lg text-sm font-bold border-2 border-ink/15 bg-white text-ink/60">لينك الصوره</button>
+            </div>
+            <div id="logo-upload-wrap">
+              <label class="block cursor-pointer">
+                <input id="logo-file" type="file" accept="image/*" class="hidden" onchange="previewLogoFile(event)">
+                <div id="logo-file-zone" class="border-2 border-dashed border-ink/20 rounded-xl p-6 text-center hover:border-flame hover:bg-flame/5 transition-colors">
+                  <div class="text-3xl mb-1">📤</div>
+                  <p class="text-sm font-bold text-ink/70">اضغط لاختيار اللوجو</p>
+                  <p class="text-xs text-ink/40">PNG, JPG, WEBP</p>
+                </div>
+              </label>
+            </div>
+            <div id="logo-link-wrap" class="hidden">
+              <input id="logo-link" type="url" class="input-base" placeholder="https://example.com/logo.png" oninput="previewLogoLink()">
+            </div>
+            <div id="logo-preview-wrap" class="hidden mt-2">
+              <p class="text-xs text-ink/55 mb-1">معاينه اللوجو:</p>
+              <div class="flex items-center gap-3">
+                <img id="logo-preview" class="h-20 w-20 object-contain rounded-xl border border-ink/10 bg-cream p-2" alt="">
+                <button type="button" onclick="removeLogo()" class="text-xs font-bold text-flame hover:underline">حذف اللوجو</button>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn-primary w-full">حفظ معلومات المطعم</button>
+        </form>
+      </div>
+
+      <!-- Accept Orders Toggle -->
+      <div class="card p-5 sm:p-6">
+        <h2 class="font-display text-2xl text-flame mb-1">استقبال الطلبات</h2>
+        <p class="text-xs text-ink/55 mb-5">لما تقفل الطلبات، العملاء هيشوفوا المنيو بس بدون ما يقدروا يطلبوا</p>
+        <div class="space-y-4">
+          <label class="flex items-center gap-3 cursor-pointer p-4 rounded-xl bg-cream/50 border border-ink/8 transition-colors hover:bg-cream">
+            <input id="setting-accept-orders" type="checkbox" class="h-6 w-6 accent-flame" checked>
+            <div class="flex-1">
+              <span class="font-bold text-sm block">قبول الطلبات</span>
+              <span id="accept-orders-desc" class="text-xs text-ink/50">العملاء يقدروا يطلبوا دلوقتي</span>
+            </div>
+            <span id="accept-orders-status" class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-700">مفتوح</span>
+          </label>
+          <button onclick="saveAcceptOrders()" class="btn-primary w-full">حفظ حالة الطلبات</button>
+        </div>
+      </div>
+
+      <!-- WiFi Settings -->
+      <div class="card p-5 sm:p-6">
+        <h2 class="font-display text-2xl text-ink mb-1">واي فاي</h2>
+        <p class="text-xs text-ink/55 mb-5">العملاء هيقدروا يتصلوا بالنت بتاعك من المنيو مباشرة</p>
+        <div class="space-y-4">
+          <div>
+            <label class="text-sm font-bold text-ink/70 mb-1.5 block">اسم الشبكة (SSID)</label>
+            <input id="setting-wifi-ssid" type="text" class="input-base" placeholder="مثال: AlAtshan_Guest" dir="ltr">
+          </div>
+          <div>
+            <label class="text-sm font-bold text-ink/70 mb-1.5 block">باسورد الواي فاي</label>
+            <div class="relative">
+              <input id="setting-wifi-password" type="password" class="input-base pl-10" placeholder="باسورد الشبكة" dir="ltr">
+              <button type="button" onclick="toggleWifiPasswordVisibility()" class="absolute left-3 top-1/2 -translate-y-1/2 text-ink/40 hover:text-ink/70 transition-colors">
+                <svg id="wifi-eye-icon" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+          <div id="wifi-qr-preview-wrap" class="hidden">
+            <label class="text-xs font-bold text-ink/50 mb-2 block">معاينة QR Code</label>
+            <div class="bg-white rounded-xl p-4 border border-ink/10 inline-block">
+              <img id="wifi-qr-preview" src="" alt="WiFi QR" class="w-[180px] h-[180px]">
+            </div>
+          </div>
+          <button onclick="saveWifiSettings()" class="btn-primary w-full">حفظ إعدادات الواي فاي</button>
+        </div>
+      </div>
+
+      <!-- Marquee Settings -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-ink/8">
+        <h3 class="font-display text-lg text-ink mb-3">📢 شريط الإعلانات المتحرك</h3>
+        <label class="text-sm font-bold text-ink/70 mb-1.5 block">نص الإعلانات</label>
+        <textarea id="setting-marquee-text" rows="3" class="input-base resize-none" placeholder="🔥 عروض اليوم   •   🛵 توصيل لكل الأحياء"></textarea>
+        <p class="text-xs text-ink/40 mt-1 mb-3">استخدم • لفصل بين الإعلانات</p>
+        <button onclick="saveMarqueeSettings()" class="btn-primary w-full">حفظ نص الإعلانات</button>
+      </div>
+
+      <!-- Preview how it looks on customer side -->
+      <div class="card p-5 sm:p-6">
+        <h2 class="font-display text-2xl text-ink mb-1">معاينه</h2>
+        <p class="text-xs text-ink/55 mb-5">كده هيبان للعميل في المنيو</p>
+        <div class="rounded-2xl overflow-hidden border border-ink/10 bg-cream p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div id="preview-logo-container" class="h-12 w-12 rounded-2xl bg-gradient-to-br from-flame to-ember flex items-center justify-center text-cream text-2xl shadow-flameGlow overflow-hidden">
+              <span id="preview-logo-emoji">🔥</span>
+            </div>
+            <div>
+              <h3 id="preview-restaurant-name" class="font-display text-xl text-flame">Linguini</h3>
+              <p class="text-xs text-ink/55">المنيو الإلكتروني</p>
+            </div>
+          </div>
+          <div id="preview-order-status" class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center">
+            <p class="text-sm font-bold text-emerald-700">يتم استقبال الطلبات حالياً</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============ ORDER DETAILS MODAL ============ -->
+<div id="order-modal" class="hidden fixed inset-0 z-50 modal-bg items-center justify-center p-4">
+  <div class="card max-w-lg w-full max-h-[90vh] overflow-y-auto fade-in">
+    <div class="sticky top-0 bg-white border-b border-ink/10 px-6 py-4 flex items-center justify-between">
+      <h3 class="font-display text-xl text-flame">تفاصيل الطلب</h3>
+      <button onclick="closeOrderModal()" class="h-8 w-8 rounded-full bg-ink/5 hover:bg-ink/10 flex items-center justify-center">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div id="order-modal-body" class="p-6"></div>
+  </div>
+</div>
+
+<!-- ============ TOAST ============ -->
+<div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 hidden">
+  <div class="bg-ink text-cream px-5 py-3 rounded-xl shadow-lg font-bold text-sm flex items-center gap-2">
+    <svg class="h-4 w-4 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/></svg>
+    <span id="toast-msg"></span>
+  </div>
+</div>
+
+<!-- ============ LOADING OVERLAY ============ -->
+<div id="loading" class="hidden fixed inset-0 z-50 modal-bg items-center justify-center">
+  <div class="bg-white rounded-2xl p-6 flex items-center gap-3">
+    <div class="h-8 w-8 border-3 border-flame border-t-transparent rounded-full spin"></div>
+    <p class="font-bold text-ink">جاري المعالجه...</p>
+  </div>
+</div>
+
+<!-- ============ FIREBASE ============ -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+import { getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc, getDocs, onSnapshot, query, orderBy, where, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCvh296Sfj27Ity1OIpDSvM_u_9u1qGk3U",
+  authDomain: "latsh-5a9c2.firebaseapp.com",
+  databaseURL: "https://latsh-5a9c2-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "latsh-5a9c2",
+  storageBucket: "latsh-5a9c2.firebasestorage.app",
+  messagingSenderId: "465669412812",
+  appId: "1:465669412812:web:6ee689387d784288d7af69",
+  measurementId: "G-KCZESS3QEK"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Cloudinary config
+const CLOUDINARY_CLOUD = 'tgcj7hna';
+const CLOUDINARY_PRESET = '_1mTZ0Jej2AE_eu2HmQnFvbHwUg';
+
+// Admin password (stored in localStorage for demo simplicity)
+const ADMIN_PASSWORD = localStorage.getItem('atshan_admin_password') || 'admin123';
+
+// Expose to window
+window.__db = db;
+window.__fs = { collection, doc, addDoc, setDoc, updateDoc, deleteDoc, getDocs, onSnapshot, query, orderBy, where, serverTimestamp, increment };
+window.__cloud = { CLOUDINARY_CLOUD, CLOUDINARY_PRESET };
+window.__adminPass = ADMIN_PASSWORD;
+
+// Dispatch ready event
+window.dispatchEvent(new Event('firebase-ready'));
+</script>
+
+<!-- ============ APP LOGIC ============ -->
+<script>
+// ============ STATE ============
+let state = {
+  categories: [],
+  products: [],
+  orders: [],
+  currentTab: 'stats',
+  
+  editingCatId: null,
+  editingProdId: null,
+  catImageMode: 'upload',
+  prodImageMode: 'upload',
+  catImageReady: null, // { url } or { file }
+  prodImageReady: null,
+  unsubCats: null,
+  unsubProds: null,
+  unsubOrders: null,
+  unsubReviews: null,
+  unsubSettings: null,
+  reviews: [],
+  settings: {},
+  ordersLoaded: false,
+};
+
+
+
+// ============ LOGIN ============
+window.doLogin = function(e) {
+  e.preventDefault();
+  const pwd = document.getElementById('login-password').value;
+  const err = document.getElementById('login-error');
+  if (pwd === window.__adminPass) {
+    sessionStorage.setItem('atshan_admin_logged', '1');
+    document.getElementById('login-screen').classList.add('hidden');
+    initApp();
+  } else {
+    err.textContent = 'كلمه المرور غير صحيحه';
+    err.classList.remove('hidden');
+  }
+};
+
+window.logout = function() {
+  sessionStorage.removeItem('atshan_admin_logged');
+  location.reload();
+};
+
+// ============ INIT ============
+window.addEventListener('firebase-ready', () => {
+  // Check if already logged in
+  if (sessionStorage.getItem('atshan_admin_logged') === '1') {
+    document.getElementById('login-screen').classList.add('hidden');
+    initApp();
+  } else {
+    document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('app').classList.add('hidden');
+  }
+});
+
+function initApp() {
+  document.getElementById('app').classList.remove('hidden');
+  switchTab('stats');
+  subscribeCategories();
+  subscribeProducts();
+  subscribeOrders();
+  subscribeReviews();
+  subscribeSettings();
+  subscribeActiveViewers();
+}
+
+// ============ TABS ============
+window.switchTab = function(tab) {
+  state.currentTab = tab;
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+  document.getElementById('tab-' + tab).classList.remove('hidden');
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    if (b.dataset.tab === tab) {
+      b.classList.remove('tab-inactive');
+      b.classList.add('tab-active');
+    } else {
+      b.classList.add('tab-inactive');
+      b.classList.remove('tab-active');
+    }
+  });
+  if (tab === 'stats') renderStats();
+  if (tab === 'reviews') renderReviews();
+  if (tab === 'social') populateSocialForm();
+  if (tab === 'settings') populateSettingsForm();
+};
+
+// ============ SUBSCRIPTIONS ============
+function subscribeCategories() {
+  const { collection, query, orderBy, onSnapshot } = window.__fs;
+  const q = query(collection(window.__db, 'categories'), orderBy('createdAt', 'asc'));
+  state.unsubCats = onSnapshot(q, snap => {
+    state.categories = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderCategories();
+    refreshProdCatSelects();
+    renderStats();
+  }, err => {
+    console.error('cats err', err);
+    document.getElementById('cat-list').innerHTML = `<div class="text-center py-12 text-flame"><p>خطأ في تحميل الأقسام. تأكد من تفعيل Firestore.</p></div>`;
+  });
+}
+
+function subscribeProducts() {
+  const { collection, query, orderBy, onSnapshot } = window.__fs;
+  const q = query(collection(window.__db, 'products'), orderBy('createdAt', 'asc'));
+  state.unsubProds = onSnapshot(q, snap => {
+    state.products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderProducts();
+    renderStats();
+  }, err => console.error('prods err', err));
+}
+
+function subscribeOrders() {
+  const { collection, query, orderBy, onSnapshot } = window.__fs;
+  const q = query(collection(window.__db, 'orders'), orderBy('createdAt', 'desc'));
+  state.unsubOrders = onSnapshot(q, snap => {
+    // Detect newly added orders (only after the initial load completes)
+    if (state.ordersLoaded) {
+      snap.docChanges().forEach(change => {
+        if (change.type === 'added') {
+          const newOrder = { id: change.doc.id, ...change.doc.data() };
+          // Only play sound for orders that are actually new (created recently)
+          // and we didn't already know about them.
+          const existed = state.orders.find(o => o.id === newOrder.id);
+          if (!existed) {
+            playOrderSound();
+            // Show a toast notification
+            showToast('🔔 طلب جديد! رقم: ' + (newOrder.orderNumber || ''));
+          }
+        }
+      });
+    }
+    state.orders = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    state.ordersLoaded = true;
+    updateOrdersBadge();
+    renderOrders();
+    renderStats();
+  }, err => console.error('orders err', err));
+}
+
+// ============ NEW ORDER SOUND ============
+// Generates a pleasant notification beep using the Web Audio API (no external file needed).
+let _audioCtx = null;
+function getAudioCtx() {
+  if (!_audioCtx) {
+    try {
+      _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    } catch (e) {
+      console.warn('AudioContext not supported');
+      return null;
+    }
+  }
+  // Resume if suspended (browsers block autoplay until user interaction)
+  if (_audioCtx.state === 'suspended') _audioCtx.resume();
+  return _audioCtx;
+}
+
+function playOrderSound() {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  // Play a short pleasant 3-note chime: C5 → E5 → G5
+  const now = ctx.currentTime;
+  const notes = [
+    { freq: 523.25, start: 0,    dur: 0.15 }, // C5
+    { freq: 659.25, start: 0.15, dur: 0.15 }, // E5
+    { freq: 783.99, start: 0.30, dur: 0.30 }, // G5 (longer, resolves)
+  ];
+  notes.forEach(({ freq, start, dur }) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    // Envelope: quick attack, gentle decay
+    gain.gain.setValueAtTime(0, now + start);
+    gain.gain.linearRampToValueAtTime(0.18, now + start + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + start + dur);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(now + start);
+    osc.stop(now + start + dur + 0.05);
+  });
+}
+
+// Unlock audio on first user interaction (any click/keypress on the page)
+// Browsers block autoplay until the user has interacted at least once.
+window.addEventListener('click', () => getAudioCtx(), { once: true });
+window.addEventListener('keydown', () => getAudioCtx(), { once: true });
+window.addEventListener('touchstart', () => getAudioCtx(), { once: true });
+
+function subscribeReviews() {
+  const { collection, query, orderBy, onSnapshot } = window.__fs;
+  const q = query(collection(window.__db, 'reviews'), orderBy('createdAt', 'desc'));
+  state.unsubReviews = onSnapshot(q, snap => {
+    state.reviews = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    updateReviewsBadge();
+    refreshRevProdSelect();
+    renderReviews();
+  }, err => console.error('reviews err', err));
+}
+
+function updateReviewsBadge() {
+  const pending = state.reviews.filter(r => !r.restaurantReply).length;
+  const badge = document.getElementById('reviews-badge');
+  if (pending > 0) {
+    badge.textContent = pending;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+}
+
+function refreshRevProdSelect() {
+  const sel = document.getElementById('rev-filter-prod');
+  if (!sel) return;
+  const cur = sel.value;
+  const ids = [...new Set(state.reviews.map(r => r.productId).filter(Boolean))];
+  const opts = ids.map(id => {
+    const p = state.products.find(x => x.id === id);
+    return `<option value="${id}">${p ? p.name : 'منتج محذوف'}</option>`;
+  }).join('');
+  sel.innerHTML = `<option value="">كل المنتجات</option>` + opts;
+  sel.value = cur;
+}
+
+function updateOrdersBadge() {
+  const count = state.orders.length;
+  const badge = document.getElementById('orders-badge');
+  if (count > 0) {
+    badge.textContent = count;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+}
+
+// ============ CLOUDINARY UPLOAD ============
+async function uploadToCloudinary(file) {
+  const url = `https://api.cloudinary.com/v1_1/${window.__cloud.CLOUDINARY_CLOUD}/auto/upload`;
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', window.__cloud.CLOUDINARY_PRESET);
+  const res = await fetch(url, { method: 'POST', body: fd });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error('Cloudinary upload failed: ' + err);
+  }
+  const data = await res.json();
+  return data.secure_url;
+}
+
+// ============ CATEGORIES ============
+window.setCatImageMode = function(mode) {
+  state.catImageMode = mode;
+  state.catImageReady = null;
+  document.getElementById('cat-preview-wrap').classList.add('hidden');
+  const u = document.getElementById('cat-mode-upload');
+  const l = document.getElementById('cat-mode-link');
+  if (mode === 'upload') {
+    u.className = 'px-3 py-2 rounded-lg text-sm font-bold border-2 border-flame bg-flame/10 text-flame';
+    l.className = 'px-3 py-2 rounded-lg text-sm font-bold border-2 border-ink/15 bg-white text-ink/60';
+    document.getElementById('cat-upload-wrap').classList.remove('hidden');
+    document.getElementById('cat-link-wrap').classList.add('hidden');
+  } else {
+    l.className = 'px-3 py-2 rounded-lg text-sm font-bold border-2 border-flame bg-flame/10 text-flame';
+    u.className = 'px-3 py-2 rounded-lg text-sm font-bold border-2 border-ink/15 bg-white text-ink/60';
+    document.getElementById('cat-upload-wrap').classList.add('hidden');
+    document.getElementById('cat-link-wrap').classList.remove('hidden');
+  }
+};
+
+window.previewCatFile = function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('cat-preview').src = ev.target.result;
+    document.getElementById('cat-preview-wrap').classList.remove('hidden');
+    state.catImageReady = { file };
+  };
+  reader.readAsDataURL(file);
+};
+
+window.previewCatLink = function() {
+  const url = document.getElementById('cat-link').value.trim();
+  if (!url) {
+    document.getElementById('cat-preview-wrap').classList.add('hidden');
+    state.catImageReady = null;
+    return;
+  }
+  document.getElementById('cat-preview').src = url;
+  document.getElementById('cat-preview-wrap').classList.remove('hidden');
+  state.catImageReady = { url };
+};
+
+window.resetCategoryForm = function() {
+  document.getElementById('category-form').reset();
+  state.catImageReady = null;
+  state.editingCatId = null;
+  document.getElementById('cat-preview-wrap').classList.add('hidden');
+  document.getElementById('cat-submit').textContent = 'إضافه القسم';
+  setCatImageMode('upload');
+};
+
+window.saveCategory = async function(e) {
+  e.preventDefault();
+  const name = document.getElementById('cat-name').value.trim();
+  if (!name) return showToast('اكتب اسم القسم', 'err');
+  let imageUrl = state.editingCatId ? (state.categories.find(c => c.id === state.editingCatId)?.image || '') : '';
+  showLoading(true);
+  try {
+    if (state.catImageReady?.file) {
+      imageUrl = await uploadToCloudinary(state.catImageReady.file);
+    } else if (state.catImageReady?.url) {
+      imageUrl = state.catImageReady.url;
+    }
+    const { collection, doc, addDoc, setDoc, serverTimestamp } = window.__fs;
+    if (state.editingCatId) {
+      await setDoc(doc(window.__db, 'categories', state.editingCatId), {
+        name, image: imageUrl, updatedAt: serverTimestamp()
+      }, { merge: true });
+      showToast('تم تحديث القسم');
+    } else {
+      await addDoc(collection(window.__db, 'categories'), {
+        name, image: imageUrl, createdAt: serverTimestamp()
+      });
+      showToast('تم إضافه القسم');
+    }
+    resetCategoryForm();
+  } catch (err) {
+    console.error(err);
+    showToast('خطأ: ' + err.message, 'err');
+  } finally {
+    showLoading(false);
+  }
+};
+
+window.editCategory = function(id) {
+  const c = state.categories.find(x => x.id === id);
+  if (!c) return;
+  state.editingCatId = id;
+  document.getElementById('cat-name').value = c.name || '';
+  if (c.image) {
+    setCatImageMode('link');
+    document.getElementById('cat-link').value = c.image;
+    previewCatLink();
+  } else {
+    setCatImageMode('upload');
+  }
+  document.getElementById('cat-submit').textContent = 'تحديث القسم';
+  document.getElementById('cat-name').scrollIntoView({ behavior: 'smooth', block: 'center' });
+};
+
+window.deleteCategory = async function(id) {
+  if (!confirm('هل تريد حذف هذا القسم؟ المنتجات التابعه له لن تُحذف لكنها ستفقد ربطها.')) return;
+  try {
+    const { doc, deleteDoc } = window.__fs;
+    await deleteDoc(doc(window.__db, 'categories', id));
+    showToast('تم حذف القسم');
+  } catch (err) {
+    showToast('خطأ: ' + err.message, 'err');
+  }
+};
+
+function renderCategories() {
+  document.getElementById('cat-count').textContent = state.categories.length;
+  const list = document.getElementById('cat-list');
+  if (state.categories.length === 0) {
+    list.innerHTML = `<div class="text-center py-12 text-ink/40">
+      <div class="text-4xl mb-2">🗂️</div>
+      <p>لا توجد أقسام بعد. أضف أول قسم!</p>
+    </div>`;
+    return;
+  }
+  list.innerHTML = state.categories.map((c, i) => `
+    <div class="card p-4 flex items-center gap-3 fade-in">
+      <div class="h-16 w-16 rounded-xl overflow-hidden shrink-0 ${c.image ? '' : 'bg-gradient-to-br from-flame to-ember flex items-center justify-center text-cream text-2xl'}">
+        ${c.image ? `<img src="${c.image}" class="h-full w-full object-cover" alt="">` : '🗂️'}
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="font-bold text-ink truncate">${c.name}</p>
+        <p class="text-xs text-ink/50">${state.products.filter(p => p.categoryId === c.id).length} منتج</p>
+      </div>
+      <div class="flex gap-1">
+        <button onclick="editCategory('${c.id}')" class="h-8 w-8 rounded-lg bg-ink/5 hover:bg-primary/15 hover:text-primary flex items-center justify-center">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+        <button onclick="deleteCategory('${c.id}')" class="h-8 w-8 rounded-lg bg-ink/5 hover:bg-flame/15 hover:text-flame flex items-center justify-center">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
+        </button>
+      </div>
+    </div>`).join('');
+}
+
+function refreshProdCatSelects() {
+  const opts = state.categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  document.getElementById('prod-cat').innerHTML = `<option value="" disabled selected>اختر القسم</option>` + opts;
+  const filter = document.getElementById('prod-filter-cat');
+  const cur = filter.value;
+  filter.innerHTML = `<option value="">كل الأقسام</option>` + opts;
+  filter.value = cur;
+}
+
+// ============ PRODUCTS ============
+window.setProdImageMode = function(mode) {
+  state.prodImageMode = mode;
+  state.prodImageReady = null;
+  document.getElementById('prod-preview-wrap').classList.add('hidden');
+  const u = document.getElementById('prod-mode-upload');
+  const l = document.getElementById('prod-mode-link');
+  if (mode === 'upload') {
+    u.className = 'px-3 py-2 rounded-lg text-sm font-bold border-2 border-flame bg-flame/10 text-flame';
+    l.className = 'px-3 py-2 rounded-lg text-sm font-bold border-2 border-ink/15 bg-white text-ink/60';
+    document.getElementById('prod-upload-wrap').classList.remove('hidden');
+    document.getElementById('prod-link-wrap').classList.add('hidden');
+  } else {
+    l.className = 'px-3 py-2 rounded-lg text-sm font-bold border-2 border-flame bg-flame/10 text-flame';
+    u.className = 'px-3 py-2 rounded-lg text-sm font-bold border-2 border-ink/15 bg-white text-ink/60';
+    document.getElementById('prod-upload-wrap').classList.add('hidden');
+    document.getElementById('prod-link-wrap').classList.remove('hidden');
+  }
+};
+
+window.previewProdFile = function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('prod-preview').src = ev.target.result;
+    document.getElementById('prod-preview-wrap').classList.remove('hidden');
+    state.prodImageReady = { file };
+  };
+  reader.readAsDataURL(file);
+};
+
+window.previewProdLink = function() {
+  const url = document.getElementById('prod-link').value.trim();
+  if (!url) {
+    document.getElementById('prod-preview-wrap').classList.add('hidden');
+    state.prodImageReady = null;
+    return;
+  }
+  document.getElementById('prod-preview').src = url;
+  document.getElementById('prod-preview-wrap').classList.remove('hidden');
+  state.prodImageReady = { url };
+};
+
+window.toggleSizes = function() {
+  const has = document.getElementById('prod-has-sizes').checked;
+  document.getElementById('sizes-wrap').classList.toggle('hidden', !has);
+  if (has && document.getElementById('sizes-list').children.length === 0) addSize();
+};
+
+window.addSize = function() {
+  const wrap = document.getElementById('sizes-list');
+  const div = document.createElement('div');
+  div.className = 'flex gap-2';
+  div.innerHTML = `
+    <input type="text" class="input-base py-2 text-sm" placeholder="اسم الحجم (صغير/وسط/كبير)">
+    <input type="number" min="0" step="0.01" class="input-base py-2 text-sm w-28" placeholder="السعر">
+    <button type="button" onclick="this.parentElement.remove()" class="h-9 w-9 shrink-0 rounded-lg bg-flame/10 text-flame hover:bg-flame hover:text-cream flex items-center justify-center">
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>`;
+  wrap.appendChild(div);
+};
+
+window.toggleAdditions = function() {
+  const has = document.getElementById('prod-has-additions').checked;
+  document.getElementById('additions-wrap').classList.toggle('hidden', !has);
+  if (has && document.getElementById('additions-list').children.length === 0) addAddition();
+};
+
+window.addAddition = function() {
+  const wrap = document.getElementById('additions-list');
+  const div = document.createElement('div');
+  div.className = 'flex gap-2';
+  div.innerHTML = `
+    <input type="text" class="input-base py-2 text-sm" placeholder="اسم الإضافه (جبنه زياده)">
+    <input type="number" min="0" step="0.01" class="input-base py-2 text-sm w-28" placeholder="السعر">
+    <button type="button" onclick="this.parentElement.remove()" class="h-9 w-9 shrink-0 rounded-lg bg-flame/10 text-flame hover:bg-flame hover:text-cream flex items-center justify-center">
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>`;
+  wrap.appendChild(div);
+};
+
+function collectSizes() {
+  if (!document.getElementById('prod-has-sizes').checked) return [];
+  const out = [];
+  document.querySelectorAll('#sizes-list > div').forEach(d => {
+    const inputs = d.querySelectorAll('input');
+    const name = inputs[0].value.trim();
+    const price = parseFloat(inputs[1].value);
+    if (name && !isNaN(price)) out.push({ name, price });
+  });
+  return out;
+}
+
+function collectAdditions() {
+  if (!document.getElementById('prod-has-additions').checked) return [];
+  const out = [];
+  document.querySelectorAll('#additions-list > div').forEach(d => {
+    const inputs = d.querySelectorAll('input');
+    const name = inputs[0].value.trim();
+    const price = parseFloat(inputs[1].value);
+    if (name && !isNaN(price)) out.push({ name, price });
+  });
+  return out;
+}
+
+window.resetProductForm = function() {
+  document.getElementById('product-form').reset();
+  document.getElementById('sizes-list').innerHTML = '';
+  document.getElementById('additions-list').innerHTML = '';
+  state.prodImageReady = null;
+  state.editingProdId = null;
+  document.getElementById('prod-preview-wrap').classList.add('hidden');
+  document.getElementById('prod-submit').textContent = 'إضافه الصنف';
+  setProdImageMode('upload');
+};
+
+window.saveProduct = async function(e) {
+  e.preventDefault();
+  const name = document.getElementById('prod-name').value.trim();
+  const desc = document.getElementById('prod-desc').value.trim();
+  const categoryId = document.getElementById('prod-cat').value;
+  const price = parseFloat(document.getElementById('prod-price').value);
+  const popular = document.getElementById('prod-popular').checked;
+  const sizes = collectSizes();
+  const additions = collectAdditions();
+  if (!name) return showToast('اكتب اسم الصنف', 'err');
+  if (!categoryId) return showToast('اختر القسم', 'err');
+  if (isNaN(price)) return showToast('اكتب السعر', 'err');
+
+  let imageUrl = state.editingProdId ? (state.products.find(p => p.id === state.editingProdId)?.image || '') : '';
+  showLoading(true);
+  try {
+    if (state.prodImageReady?.file) {
+      imageUrl = await uploadToCloudinary(state.prodImageReady.file);
+    } else if (state.prodImageReady?.url) {
+      imageUrl = state.prodImageReady.url;
+    }
+    const { collection, doc, addDoc, setDoc, serverTimestamp } = window.__fs;
+    const payload = {
+      name, description: desc, categoryId, price, popular,
+      hasSizes: sizes.length > 0, sizes,
+      hasAdditions: additions.length > 0, additions,
+      image: imageUrl, updatedAt: serverTimestamp()
+    };
+    if (state.editingProdId) {
+      await setDoc(doc(window.__db, 'products', state.editingProdId), payload, { merge: true });
+      showToast('تم تحديث الصنف');
+    } else {
+      payload.createdAt = serverTimestamp();
+      await addDoc(collection(window.__db, 'products'), payload);
+      showToast('تم إضافه الصنف');
+    }
+    resetProductForm();
+  } catch (err) {
+    console.error(err);
+    showToast('خطأ: ' + err.message, 'err');
+  } finally {
+    showLoading(false);
+  }
+};
+
+window.editProduct = function(id) {
+  const p = state.products.find(x => x.id === id);
+  if (!p) return;
+  state.editingProdId = id;
+  document.getElementById('prod-name').value = p.name || '';
+  document.getElementById('prod-desc').value = p.description || '';
+  document.getElementById('prod-cat').value = p.categoryId || '';
+  document.getElementById('prod-price').value = p.price || 0;
+  document.getElementById('prod-popular').checked = !!p.popular;
+
+  // Sizes
+  document.getElementById('prod-has-sizes').checked = !!p.hasSizes;
+  document.getElementById('sizes-list').innerHTML = '';
+  if (p.hasSizes && p.sizes?.length) {
+    toggleSizes();
+    p.sizes.forEach(s => {
+      addSize();
+      const last = document.getElementById('sizes-list').lastElementChild;
+      const inputs = last.querySelectorAll('input');
+      inputs[0].value = s.name;
+      inputs[1].value = s.price;
+    });
+  } else {
+    document.getElementById('sizes-wrap').classList.add('hidden');
+  }
+
+  // Additions
+  document.getElementById('prod-has-additions').checked = !!p.hasAdditions;
+  document.getElementById('additions-list').innerHTML = '';
+  if (p.hasAdditions && p.additions?.length) {
+    toggleAdditions();
+    p.additions.forEach(a => {
+      addAddition();
+      const last = document.getElementById('additions-list').lastElementChild;
+      const inputs = last.querySelectorAll('input');
+      inputs[0].value = a.name;
+      inputs[1].value = a.price;
+    });
+  } else {
+    document.getElementById('additions-wrap').classList.add('hidden');
+  }
+
+  // Image
+  if (p.image) {
+    setProdImageMode('link');
+    document.getElementById('prod-link').value = p.image;
+    previewProdLink();
+  } else {
+    setProdImageMode('upload');
+  }
+  document.getElementById('prod-submit').textContent = 'تحديث الصنف';
+  document.getElementById('prod-name').scrollIntoView({ behavior: 'smooth', block: 'center' });
+};
+
+window.deleteProduct = async function(id) {
+  if (!confirm('هل تريد حذف هذا الصنف؟')) return;
+  try {
+    const { doc, deleteDoc } = window.__fs;
+    await deleteDoc(doc(window.__db, 'products', id));
+    showToast('تم حذف الصنف');
+  } catch (err) {
+    showToast('خطأ: ' + err.message, 'err');
+  }
+};
+
+function renderProducts() {
+  const filterCat = document.getElementById('prod-filter-cat').value;
+  const search = (document.getElementById('prod-search').value || '').trim().toLowerCase();
+  let prods = state.products.slice();
+  if (filterCat) prods = prods.filter(p => p.categoryId === filterCat);
+  if (search) prods = prods.filter(p => (p.name || '').toLowerCase().includes(search));
+
+  const list = document.getElementById('prod-list');
+  if (prods.length === 0) {
+    list.innerHTML = `<div class="text-center py-12 text-ink/40">
+      <div class="text-4xl mb-2">🍽️</div>
+      <p>${state.products.length === 0 ? 'لا توجد منتجات بعد. أضف أول منتج!' : 'لا توجد نتائج'}</p>
+    </div>`;
+    return;
+  }
+  list.innerHTML = prods.map(p => {
+    const cat = state.categories.find(c => c.id === p.categoryId);
+    return `
+    <div class="card p-3 flex items-center gap-3 fade-in">
+      <div class="h-16 w-16 rounded-xl overflow-hidden shrink-0 ${p.image ? '' : 'bg-gradient-to-br from-primary to-flame flex items-center justify-center text-cream text-2xl'}">
+        ${p.image ? `<img src="${p.image}" class="h-full w-full object-cover" alt="">` : '🍽️'}
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 flex-wrap">
+          <p class="font-bold text-ink">${p.name}</p>
+          ${p.popular ? `<span class="text-[10px] bg-gold/20 text-gold font-bold px-2 py-0.5 rounded-full">رائج</span>` : ''}
+        </div>
+        <p class="text-xs text-ink/50 truncate mt-0.5">${cat?.name || 'بدون قسم'} · ${p.price} ج.م</p>
+        <div class="flex gap-1.5 mt-1 flex-wrap">
+          ${p.hasSizes ? `<span class="text-[10px] bg-teal/10 text-teal font-bold px-2 py-0.5 rounded-full">${p.sizes.length} أحجام</span>` : ''}
+          ${p.hasAdditions ? `<span class="text-[10px] bg-primary/10 text-primary font-bold px-2 py-0.5 rounded-full">${p.additions.length} إضافات</span>` : ''}
+        </div>
+      </div>
+      <div class="flex flex-col gap-1">
+        <button onclick="editProduct('${p.id}')" class="h-8 w-8 rounded-lg bg-ink/5 hover:bg-primary/15 hover:text-primary flex items-center justify-center">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+        <button onclick="deleteProduct('${p.id}')" class="h-8 w-8 rounded-lg bg-ink/5 hover:bg-flame/15 hover:text-flame flex items-center justify-center">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ============ ORDERS ============
+
+
+function renderOrders() {
+  let orders = state.orders.slice();
+  const list = document.getElementById('orders-list');
+  if (orders.length === 0) {
+    list.innerHTML = `<div class="text-center py-12 text-ink/40">
+      <div class="text-4xl mb-2">📭</div>
+      <p>لا توجد طلبات بعد</p>
+    </div>`;
+    return;
+  }
+  list.innerHTML = orders.map(o => {
+    const items = o.items || [];
+    const itemsCount = items.reduce((s, i) => s + (i.qty || 1), 0);
+    const isDineIn = o.type === 'dinein';
+    return `
+    <div class="card p-4 fade-in">
+      <!-- Header row: order number, date, status badge, total -->
+      <div class="flex items-start justify-between gap-3 flex-wrap">
+        <div class="flex items-center gap-3">
+          <div class="h-10 w-10 rounded-xl bg-flame/10 text-flame flex items-center justify-center font-display text-lg">${(o.orderNumber || '#').slice(-1)}</div>
+          <div>
+            <p class="font-bold text-ink">${o.orderNumber || 'طلب'}</p>
+            <p class="text-xs text-ink/50">${formatDate(o.createdAt, true)} · ${itemsCount} صنف</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="font-display text-lg text-flame">${o.total || 0} ج.م</span>
+        </div>
+      </div>
+
+      <!-- Customer info (inline) -->
+      <div class="mt-3 bg-cream/50 rounded-xl p-3 text-sm space-y-1.5 border border-ink/5">
+        <div class="flex justify-between gap-3"><span class="text-ink/50 shrink-0">النوع</span><span class="font-bold">${isDineIn ? '🍽️ داخل المطعم' : '🛵 توصيل'}</span></div>
+        ${isDineIn && o.table ? `<div class="flex justify-between gap-3"><span class="text-ink/50 shrink-0">ترابيزة</span><span class="font-bold">${o.table}</span></div>` : ''}
+        ${o.name ? `<div class="flex justify-between gap-3"><span class="text-ink/50 shrink-0">الاسم</span><span class="font-bold">${o.name}</span></div>` : ''}
+        ${o.phone ? `<div class="flex justify-between gap-3"><span class="text-ink/50 shrink-0">الهاتف</span><span class="font-bold" dir="ltr">${o.phone}</span></div>` : ''}
+        ${o.address ? `<div class="flex justify-between gap-3"><span class="text-ink/50 shrink-0">العنوان</span><span class="font-bold text-left">${o.address}</span></div>` : ''}
+        ${o.city ? `<div class="flex justify-between gap-3"><span class="text-ink/50 shrink-0">المدينه</span><span class="font-bold">${o.city}</span></div>` : ''}
+        ${o.notes ? `<div class="flex justify-between gap-3"><span class="text-ink/50 shrink-0">ملاحظات</span><span class="font-bold text-left">${o.notes}</span></div>` : ''}
+      </div>
+
+      <!-- Items (inline) -->
+      <div class="mt-3">
+        <p class="font-bold text-xs text-ink/55 mb-2">الأصناف:</p>
+        <div class="space-y-1.5">
+          ${items.map(it => `
+            <div class="flex items-start gap-2 bg-white border border-ink/8 rounded-xl p-2.5">
+              <div class="h-8 w-8 rounded-lg bg-flame/10 text-flame flex items-center justify-center font-bold text-xs shrink-0">${it.qty}</div>
+              <div class="flex-1 min-w-0">
+                <p class="font-bold text-sm">${it.name}</p>
+                ${it.size ? `<p class="text-[11px] text-ink/55">الحجم: ${it.size.name} (${it.size.price} ج.م)</p>` : ''}
+                ${it.additions?.length ? `<p class="text-[11px] text-ink/55">إضافات: ${it.additions.map(a => a.name + ' (+' + a.price + ')').join('، ')}</p>` : ''}
+                ${it.notes ? `<p class="text-[11px] text-ink/55">📝 ${it.notes}</p>` : ''}
+              </div>
+              <p class="font-bold text-flame text-sm whitespace-nowrap">${(it.lineTotal || 0).toFixed(0)} ج.م</p>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- Total -->
+      <div class="flex justify-between items-center mt-3 pt-3 border-t border-ink/10">
+        <span class="font-bold text-sm">الإجمالي</span>
+        <span class="font-display text-xl text-flame">${o.total || 0} ج.م</span>
+      </div>
+
+      
+    </div>`;
+  }).join('');
+}
+
+window.openOrderModal = function(id) {
+  const o = state.orders.find(x => x.id === id);
+  if (!o) return;
+  const items = o.items || [];
+  const modal = document.getElementById('order-modal');
+  const body = document.getElementById('order-modal-body');
+  body.innerHTML = `
+    <div class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs text-ink/50">رقم الطلب</p>
+          <p class="font-display text-xl text-flame">${o.orderNumber || 'طلب'}</p>
+        </div>
+        
+      </div>
+
+      <div class="bg-cream rounded-xl p-3 text-sm space-y-1.5">
+        <div class="flex justify-between"><span class="text-ink/50">التاريخ</span><span class="font-bold">${formatDate(o.createdAt, true)}</span></div>
+        <div class="flex justify-between"><span class="text-ink/50">النوع</span><span class="font-bold">${o.type === 'dinein' ? '🍽️ داخل المطعم' : '🛵 توصيل'}</span></div>
+        ${o.type === 'dinein' && o.table ? `<div class="flex justify-between"><span class="text-ink/50">ترابيزة</span><span class="font-bold">${o.table}</span></div>` : ''}
+        ${o.name ? `<div class="flex justify-between"><span class="text-ink/50">الاسم</span><span class="font-bold">${o.name}</span></div>` : ''}
+        ${o.phone ? `<div class="flex justify-between"><span class="text-ink/50">الهاتف</span><span class="font-bold" dir="ltr">${o.phone}</span></div>` : ''}
+        ${o.address ? `<div class="flex justify-between gap-3"><span class="text-ink/50 shrink-0">العنوان</span><span class="font-bold text-left">${o.address}</span></div>` : ''}
+        ${o.city ? `<div class="flex justify-between"><span class="text-ink/50">المدينه</span><span class="font-bold">${o.city}</span></div>` : ''}
+        ${o.notes ? `<div class="flex justify-between gap-3"><span class="text-ink/50 shrink-0">ملاحظات</span><span class="font-bold text-left">${o.notes}</span></div>` : ''}
+      </div>
+
+      <div>
+        <p class="font-bold text-sm mb-2">الأصناف</p>
+        <div class="space-y-2">
+          ${items.map(it => `
+            <div class="flex items-start gap-2 bg-white border border-ink/8 rounded-xl p-3">
+              <div class="h-10 w-10 rounded-lg bg-flame/10 text-flame flex items-center justify-center font-bold shrink-0">${it.qty}</div>
+              <div class="flex-1 min-w-0">
+                <p class="font-bold text-sm">${it.name}</p>
+                ${it.size ? `<p class="text-xs text-ink/55">الحجم: ${it.size.name} (${it.size.price} ج.م)</p>` : ''}
+                ${it.additions?.length ? `<p class="text-xs text-ink/55">إضافات: ${it.additions.map(a => a.name + ' (+' + a.price + ')').join('، ')}</p>` : ''}
+                ${it.notes ? `<p class="text-xs text-ink/55">ملاحظات: ${it.notes}</p>` : ''}
+              </div>
+              <p class="font-bold text-flame">${(it.lineTotal || 0).toFixed(0)} ج.م</p>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="flex justify-between items-center pt-3 border-t border-ink/10">
+        <span class="font-bold">الإجمالي</span>
+        <span class="font-display text-2xl text-flame">${o.total || 0} ج.م</span>
+      </div>
+
+      
+    </div>`;
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+};
+
+window.closeOrderModal = function() {
+  const modal = document.getElementById('order-modal');
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+};
+
+
+
+// ============ REVIEWS ============
+function starsRowHtml(n) {
+  n = Number(n) || 0;
+  let s = '';
+  for (let i = 0; i < 5; i++) {
+    s += `<svg class="h-3.5 w-3.5 ${i < n ? 'text-gold' : 'text-ink/15'}" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.958a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.367 2.446a1 1 0 00-.363 1.118l1.287 3.957c.3.922-.755 1.688-1.538 1.118l-3.367-2.446a1 1 0 00-1.176 0l-3.367 2.446c-.783.57-1.838-.196-1.538-1.118l1.287-3.957a1 1 0 00-.363-1.118L2.063 9.385c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.958z"/></svg>`;
+  }
+  return `<span class="inline-flex gap-0.5 align-middle">${s}</span>`;
+}
+
+function renderReviews() {
+  const filterProd = document.getElementById('rev-filter-prod')?.value || '';
+  const filterStars = document.getElementById('rev-filter-stars')?.value || '';
+  let reviews = state.reviews.slice();
+  if (filterProd) reviews = reviews.filter(r => r.productId === filterProd);
+  if (filterStars) reviews = reviews.filter(r => String(r.stars) === filterStars);
+  const list = document.getElementById('reviews-list');
+  if (reviews.length === 0) {
+    list.innerHTML = `<div class="text-center py-12 text-ink/40">
+      <div class="text-4xl mb-2">⭐</div>
+      <p>${state.reviews.length === 0 ? 'لا توجد تقييمات بعد' : 'لا توجد تقييمات بهذه الفلترة'}</p>
+    </div>`;
+    return;
+  }
+  list.innerHTML = reviews.map(r => {
+    const prod = state.products.find(p => p.id === r.productId);
+    const prodName = prod ? prod.name : 'منتج محذوف';
+    let dateStr = '-';
+    try {
+      if (r.createdAt) {
+        const ts = r.createdAt.toDate ? r.createdAt.toDate() : (r.createdAt.seconds ? new Date(r.createdAt.seconds * 1000) : new Date(r.createdAt));
+        dateStr = ts.toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' }) + ' · ' + ts.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+      }
+    } catch (e) {}
+    return `
+    <div class="card p-4 fade-in">
+      <div class="flex items-start gap-3 flex-wrap">
+        <div class="h-10 w-10 rounded-full bg-gradient-to-br from-flame to-ember flex items-center justify-center text-cream font-bold shrink-0">${(r.name || '؟').charAt(0)}</div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <p class="font-bold text-ink">${r.name || 'مستخدم'}</p>
+            ${starsRowHtml(r.stars)}
+            <span class="text-xs text-ink/40">${dateStr}</span>
+          </div>
+          <p class="text-xs text-ink/55 mt-0.5">على: <span class="font-bold">${prodName}</span></p>
+          <p class="text-sm text-ink/80 mt-2 leading-relaxed">${r.comment || ''}</p>
+
+          ${r.restaurantReply ? `
+            <div class="mt-3 bg-flame/8 border-r-4 border-flame rounded-lg p-3">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="badge-restaurant-reply text-[10px] font-bold px-2 py-0.5 rounded-full">رد المطعم</span>
+                <span class="text-[11px] text-ink/50">${r.restaurantReplyDate ? formatDate(r.restaurantReplyDate, true) : ''}</span>
+              </div>
+              <p class="text-sm text-ink/80">${r.restaurantReply}</p>
+            </div>
+          ` : ''}
+
+          <div class="mt-3 flex flex-wrap gap-2">
+            <button onclick="toggleReplyForm('${r.id}')" class="btn-ghost text-xs py-1.5 flex items-center gap-1">
+              <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
+              ${r.restaurantReply ? 'تعديل الرد' : 'رد'}
+            </button>
+            <button onclick="deleteReview('${r.id}')" class="btn-ghost text-xs py-1.5 flex items-center gap-1 hover:bg-flame/15 hover:text-flame">
+              <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
+              حذف
+            </button>
+          </div>
+
+          <div id="reply-form-${r.id}" class="hidden mt-3">
+            <textarea id="reply-text-${r.id}" rows="2" class="input-base text-sm" placeholder="اكتب رد المطعم هنا...">${r.restaurantReply || ''}</textarea>
+            <div class="flex gap-2 mt-2">
+              <button onclick="submitReply('${r.id}')" class="btn-primary text-xs py-1.5 px-3">حفظ الرد</button>
+              <button onclick="toggleReplyForm('${r.id}')" class="btn-ghost text-xs py-1.5">إلغاء</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.toggleReplyForm = function(id) {
+  const form = document.getElementById('reply-form-' + id);
+  if (!form) return;
+  form.classList.toggle('hidden');
+  if (!form.classList.contains('hidden')) {
+    setTimeout(() => {
+      const ta = document.getElementById('reply-text-' + id);
+      if (ta) ta.focus();
+    }, 50);
+  }
+};
+
+window.submitReply = async function(id) {
+  const text = (document.getElementById('reply-text-' + id)?.value || '').trim();
+  if (!text) return showToast('اكتب الرد الأول', 'err');
+  try {
+    const { doc, updateDoc, serverTimestamp } = window.__fs;
+    await updateDoc(doc(window.__db, 'reviews', id), {
+      restaurantReply: text,
+      restaurantReplyDate: serverTimestamp()
+    });
+    showToast('تم حفظ الرد');
+    toggleReplyForm(id);
+  } catch (err) {
+    showToast('خطأ: ' + err.message, 'err');
+  }
+};
+
+window.deleteReview = async function(id) {
+  if (!confirm('هل تريد حذف هذا التقييم؟ لا يمكن التراجع.')) return;
+  try {
+    const { doc, deleteDoc } = window.__fs;
+    await deleteDoc(doc(window.__db, 'reviews', id));
+    showToast('تم حذف التقييم');
+  } catch (err) {
+    showToast('خطأ: ' + err.message, 'err');
+  }
+};
+
+// ============ SOCIAL MEDIA ============
+function subscribeSettings() {
+  const { doc, onSnapshot } = window.__fs;
+  state.unsubSettings = onSnapshot(doc(window.__db, 'settings', 'main'), snap => {
+    state.settings = snap.exists() ? snap.data() : {};
+    populateSocialForm();
+    populateSettingsForm();
+    updateAcceptOrdersUI();
+  }, err => console.error('settings err', err));
+}
+
+// ============ ACTIVE VIEWERS TRACKING ============
+function subscribeActiveViewers() {
+  const { collection, onSnapshot, query, orderBy } = window.__fs;
+  const q = query(collection(window.__db, 'activeViewers'), orderBy('lastSeen', 'desc'));
+  state.unsubViewers = onSnapshot(q, snap => {
+    const viewers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const now = Date.now();
+    const ONLINE_THRESHOLD = 60000; // 60 seconds
+    const ACTIVE_THRESHOLD = 300000; // 5 minutes
+    const onlineCount = viewers.filter(v => {
+      const lastSeen = v.lastSeen?.seconds ? v.lastSeen.seconds * 1000 : (v.lastSeen ? new Date(v.lastSeen).getTime() : 0);
+      return (now - lastSeen) < ONLINE_THRESHOLD;
+    }).length;
+    const activeCount = viewers.filter(v => {
+      const lastSeen = v.lastSeen?.seconds ? v.lastSeen.seconds * 1000 : (v.lastSeen ? new Date(v.lastSeen).getTime() : 0);
+      return (now - lastSeen) < ACTIVE_THRESHOLD;
+    }).length;
+    document.getElementById('stat-online-now').textContent = onlineCount;
+    document.getElementById('stat-active-now').textContent = activeCount;
+    const totalVisits = state.settings?.totalVisits || 0;
+    document.getElementById('stat-total-visits').textContent = totalVisits.toLocaleString('ar-EG');
+  }, err => console.error('viewers err', err));
+}
+
+// ============ SETTINGS TAB ============
+function populateSettingsForm() {
+  const s = state.settings || {};
+  const nameInput = document.getElementById('setting-restaurant-name');
+  if (nameInput) nameInput.value = s.restaurantName || '';
+  const acceptInput = document.getElementById('setting-accept-orders');
+  if (acceptInput) acceptInput.checked = s.acceptingOrders !== false; // default true
+  updateAcceptOrdersUI();
+  // Logo preview
+  if (s.logo) {
+    document.getElementById('logo-preview').src = s.logo;
+    document.getElementById('logo-preview-wrap').classList.remove('hidden');
+    document.getElementById('preview-logo-container').innerHTML = '<img src="' + s.logo + '" class="h-full w-full object-contain" alt="">';
+  } else {
+    document.getElementById('logo-preview-wrap').classList.add('hidden');
+    document.getElementById('preview-logo-container').innerHTML = '<span id="preview-logo-emoji">🔥</span>';
+  }
+  // Preview name
+  const previewName = document.getElementById('preview-restaurant-name');
+  if (previewName) previewName.textContent = s.restaurantName || 'Linguini';
+  // WiFi
+  const wifiSsid = document.getElementById('setting-wifi-ssid');
+  const wifiPass = document.getElementById('setting-wifi-password');
+  if (wifiSsid) wifiSsid.value = s.wifiSsid || '';
+  if (wifiPass) wifiPass.value = s.wifiPassword || '';
+  renderWifiPreview();
+    var marqueeInput = document.getElementById('setting-marquee-text');
+    if (marqueeInput) marqueeInput.value = s.marqueeText || '';
+}
+
+function updateAcceptOrdersUI() {
+  const accepting = state.settings?.acceptingOrders !== false;
+  const desc = document.getElementById('accept-orders-desc');
+  const status = document.getElementById('accept-orders-status');
+  const preview = document.getElementById('preview-order-status');
+  const checkbox = document.getElementById('setting-accept-orders');
+  if (checkbox) checkbox.checked = accepting;
+  if (desc) desc.textContent = accepting ? 'العملاء يقدروا يطلبوا دلوقتي' : 'العملاء هيشوفوا المنيو بس';
+  if (status) {
+    if (accepting) {
+      status.textContent = 'مفتوح';
+      status.className = 'text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-700';
+    } else {
+      status.textContent = 'مقفول';
+      status.className = 'text-xs font-bold px-3 py-1 rounded-full bg-flame/15 text-flame';
+    }
+  }
+  if (preview) {
+    if (accepting) {
+      preview.className = 'p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center';
+      preview.innerHTML = '<p class="text-sm font-bold text-emerald-700">يتم استقبال الطلبات حالياً</p>';
+    } else {
+      preview.className = 'p-3 rounded-xl bg-flame/10 border border-flame/20 text-center';
+      preview.innerHTML = '<p class="text-sm font-bold text-flame">الطلبات مقفوله حالياً - عرض المنيو فقط</p>';
+    }
+  }
+}
+
+let logoImageMode = 'upload';
+let logoImageReady = null;
+
+window.setLogoImageMode = function(mode) {
+  logoImageMode = mode;
+  logoImageReady = null;
+  document.getElementById('logo-preview-wrap').classList.add('hidden');
+  const u = document.getElementById('logo-mode-upload');
+  const l = document.getElementById('logo-mode-link');
+  if (mode === 'upload') {
+    u.className = 'px-3 py-2 rounded-lg text-sm font-bold border-2 border-flame bg-flame/10 text-flame';
+    l.className = 'px-3 py-2 rounded-lg text-sm font-bold border-2 border-ink/15 bg-white text-ink/60';
+    document.getElementById('logo-upload-wrap').classList.remove('hidden');
+    document.getElementById('logo-link-wrap').classList.add('hidden');
+  } else {
+    l.className = 'px-3 py-2 rounded-lg text-sm font-bold border-2 border-flame bg-flame/10 text-flame';
+    u.className = 'px-3 py-2 rounded-lg text-sm font-bold border-2 border-ink/15 bg-white text-ink/60';
+    document.getElementById('logo-upload-wrap').classList.add('hidden');
+    document.getElementById('logo-link-wrap').classList.remove('hidden');
+  }
+};
+
+window.previewLogoFile = function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('logo-preview').src = ev.target.result;
+    document.getElementById('logo-preview-wrap').classList.remove('hidden');
+    logoImageReady = { file };
+  };
+  reader.readAsDataURL(file);
+};
+
+window.previewLogoLink = function() {
+  const url = document.getElementById('logo-link').value.trim();
+  if (!url) {
+    document.getElementById('logo-preview-wrap').classList.add('hidden');
+    logoImageReady = null;
+    return;
+  }
+  document.getElementById('logo-preview').src = url;
+  document.getElementById('logo-preview-wrap').classList.remove('hidden');
+  logoImageReady = { url };
+};
+
+window.removeLogo = function() {
+  logoImageReady = { remove: true };
+  document.getElementById('logo-preview-wrap').classList.add('hidden');
+  document.getElementById('logo-file').value = '';
+  document.getElementById('logo-link').value = '';
+};
+
+window.saveRestaurantSettings = async function(e) {
+  e.preventDefault();
+  const restaurantName = document.getElementById('setting-restaurant-name').value.trim();
+  if (!restaurantName) return showToast('اكتب اسم المطعم', 'err');
+  let logo = '';
+  if (logoImageReady?.remove) {
+    logo = '';
+  } else if (logoImageReady?.file) {
+    showLoading(true);
+    try {
+      logo = await uploadToCloudinary(logoImageReady.file);
+    } catch (err) {
+      showLoading(false);
+      return showToast('خطأ في رفع اللوجو: ' + err.message, 'err');
+    }
+  } else if (logoImageReady?.url) {
+    logo = logoImageReady.url;
+  } else {
+    logo = state.settings?.logo || '';
+  }
+  showLoading(true);
+  try {
+    const { doc, setDoc, serverTimestamp } = window.__fs;
+    await setDoc(doc(window.__db, 'settings', 'main'), {
+      restaurantName, logo, updatedAt: serverTimestamp()
+    }, { merge: true });
+    showToast('تم حفظ معلومات المطعم');
+    logoImageReady = null;
+  } catch (err) {
+    showToast('خطأ: ' + err.message, 'err');
+  } finally {
+    showLoading(false);
+  }
+};
+
+window.saveAcceptOrders = async function() {
+  const acceptingOrders = document.getElementById('setting-accept-orders').checked;
+  showLoading(true);
+  try {
+    const { doc, setDoc, serverTimestamp } = window.__fs;
+    await setDoc(doc(window.__db, 'settings', 'main'), {
+      acceptingOrders, updatedAt: serverTimestamp()
+    }, { merge: true });
+    showToast(acceptingOrders ? 'تم فتح استقبال الطلبات' : 'تم قفل استقبال الطلبات');
+  } catch (err) {
+    showToast('خطأ: ' + err.message, 'err');
+  } finally {
+    showLoading(false);
+  }
+};
+
+// ============ WIFI SETTINGS ============
+function makeWifiString(ssid, pass) {
+  const escaped = (s) => s.replace(/([\\;,:""])/g, '\\$1');
+  return 'WIFI:T:WPA;S:' + escaped(ssid) + ';P:' + escaped(pass) + ';;';
+}
+
+window.toggleWifiPasswordVisibility = function() {
+  const inp = document.getElementById('setting-wifi-password');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+};
+
+window.saveWifiSettings = async function() {
+  const ssid = document.getElementById('setting-wifi-ssid').value.trim();
+  const password = document.getElementById('setting-wifi-password').value;
+  if (!ssid) return showToast('اكتب اسم الشبكة', 'err');
+  showLoading(true);
+  try {
+    const { doc, setDoc, serverTimestamp } = window.__fs;
+    await setDoc(doc(window.__db, 'settings', 'main'), {
+      wifiSsid: ssid,
+      wifiPassword: password,
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+    showToast('تم حفظ إعدادات الواي فاي');
+  } catch (err) {
+    showToast('خطأ: ' + err.message, 'err');
+  } finally {
+    showLoading(false);
+  }
+};
+
+// ============ MARQUEE SETTINGS ===========
+window.saveMarqueeSettings = async function() {
+  var text = document.getElementById('setting-marquee-text').value.trim();
+  if (!window.__fs || !window.__db) { showToast('Firebase not ready', 'err'); return; }
+  showLoading(true);
+  try {
+    const { doc, setDoc } = window.__fs;
+    await setDoc(doc(window.__db, 'settings', 'main'), { marqueeText: text }, { merge: true });
+    showToast('تم حفظ نص الإعلانات');
+    // Immediately update local state
+    if (state.settings) state.settings.marqueeText = text;
+  } catch (err) {
+    console.error('Marquee save error:', err);
+    showToast('خطأ: ' + err.message, 'err');
+  } finally {
+    showLoading(false);
+  }
+};
+
+// Live QR preview when typing
+document.getElementById('setting-wifi-ssid')?.addEventListener('input', renderWifiPreview);
+document.getElementById('setting-wifi-password')?.addEventListener('input', renderWifiPreview);
+
+function renderWifiPreview() {
+  const ssid = document.getElementById('setting-wifi-ssid').value.trim();
+  const pass = document.getElementById('setting-wifi-password').value;
+  const wrap = document.getElementById('wifi-qr-preview-wrap');
+  const img = document.getElementById('wifi-qr-preview');
+  if (!ssid || !window.QRCode) { wrap.classList.add('hidden'); return; }
+  wrap.classList.remove('hidden');
+  const wifiStr = makeWifiString(ssid, pass || '');
+  window.QRCode.toDataURL(wifiStr, { width: 360, margin: 1, color: { dark: '#2B1B12', light: '#FFFFFF' } })
+    .then(url => { img.src = url; })
+    .catch(err => console.warn('QR preview err', err));
+}
+
+function populateSocialForm() {
+  const s = state.settings || {};
+  const fb = document.getElementById('social-facebook');
+  const ig = document.getElementById('social-instagram');
+  const tk = document.getElementById('social-tiktok');
+  const waEn = document.getElementById('social-wa-enabled');
+  const waNum = document.getElementById('social-wa-number');
+  if (fb) fb.value = s.facebook || '';
+  if (ig) ig.value = s.instagram || '';
+  if (tk) tk.value = s.tiktok || '';
+  if (waEn) waEn.checked = !!s.whatsappEnabled;
+  if (waNum) waNum.value = s.whatsappNumber || '';
+  onWaToggle();
+  previewSocial();
+}
+
+window.onWaToggle = function() {
+  const en = document.getElementById('social-wa-enabled')?.checked;
+  const wrap = document.getElementById('wa-number-wrap');
+  const status = document.getElementById('wa-status');
+  if (wrap) wrap.classList.toggle('hidden', !en);
+  if (status) {
+    if (en) {
+      status.textContent = 'مفعّل';
+      status.className = 'text-xs font-bold px-2 py-1 rounded-full bg-emerald-500/15 text-emerald-700';
+    } else {
+      status.textContent = 'معطل';
+      status.className = 'text-xs font-bold px-2 py-1 rounded-full bg-ink/5 text-ink/50';
+    }
+  }
+  previewSocial();
+};
+
+window.previewSocial = function() {
+  const wrap = document.getElementById('social-preview');
+  if (!wrap) return;
+  const fb = document.getElementById('social-facebook')?.value?.trim();
+  const ig = document.getElementById('social-instagram')?.value?.trim();
+  const tk = document.getElementById('social-tiktok')?.value?.trim();
+  const items = [];
+  if (fb) items.push({ svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/></svg>' });
+  if (ig) items.push({ svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c2.717 0 3.056.01 4.122.06 1.065.05 1.79.217 2.428.465.66.254 1.216.598 1.772 1.153a4.908 4.908 0 0 1 1.153 1.772c.247.637.415 1.363.465 2.428.047 1.066.06 1.405.06 4.122 0 2.717-.01 3.056-.06 4.122-.05 1.065-.218 1.79-.465 2.428a4.883 4.883 0 0 1-1.153 1.772 4.915 4.915 0 0 1-1.772 1.153c-.637.247-1.363.415-2.428.465-1.066.047-1.405.06-4.122.06-2.717 0-3.056-.01-4.122-.06-1.065-.05-1.79-.218-2.428-.465a4.89 4.89 0 0 1-1.772-1.153 4.904 4.904 0 0 1-1.153-1.772c-.248-.637-.415-1.363-.465-2.428C2.013 15.056 2 14.717 2 12c0-2.717.01-3.056.06-4.122.05-1.066.217-1.79.465-2.428a4.88 4.88 0 0 1 1.153-1.772A4.897 4.897 0 0 1 5.45 2.525c.638-.248 1.362-.415 2.428-.465C8.944 2.013 9.283 2 12 2zm0 1.802c-2.67 0-2.986.01-4.04.059-.976.045-1.505.207-1.858.344-.466.182-.8.398-1.15.748-.35.35-.566.684-.748 1.15-.137.353-.3.882-.344 1.857-.048 1.055-.058 1.37-.058 4.04 0 2.67.01 2.986.058 4.04.045.976.207 1.505.344 1.858.182.466.399.8.748 1.15.35.35.684.566 1.15.748.353.137.882.3 1.857.344 1.055.048 1.37.058 4.04.058s2.985-.01 4.04-.058c.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.684.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.04 0-2.67-.01-2.986-.058-4.04-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 0 0-.748-1.15 3.098 3.098 0 0 0-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.055-.048-1.37-.058-4.04-.058zm0 3.063A5.135 5.135 0 1 1 12 16.135 5.135 5.135 0 0 1 12 6.865zm0 8.468A3.333 3.333 0 1 0 12 8.667a3.333 3.333 0 0 0 0 6.666zm5.338-9.87a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4z"/></svg>' });
+  if (tk) items.push({ svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.84-.1z"/></svg>' });
+  wrap.innerHTML = items.map(it => `
+    <span class="h-7 w-7 rounded-full bg-cream/15 flex items-center justify-center text-cream">
+      <span class="block h-4 w-4">${it.svg}</span>
+    </span>`).join('');
+};
+
+window.saveSocial = async function(e) {
+  e.preventDefault();
+  const facebook = document.getElementById('social-facebook').value.trim();
+  const instagram = document.getElementById('social-instagram').value.trim();
+  const tiktok = document.getElementById('social-tiktok').value.trim();
+  showLoading(true);
+  try {
+    const { doc, setDoc, serverTimestamp } = window.__fs;
+    await setDoc(doc(window.__db, 'settings', 'main'), {
+      facebook, instagram, tiktok,
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+    showToast('تم حفظ روابط السوشيال ميديا');
+  } catch (err) {
+    showToast('خطأ: ' + err.message, 'err');
+  } finally {
+    showLoading(false);
+  }
+};
+
+window.saveWhatsapp = async function() {
+  const whatsappEnabled = !!document.getElementById('social-wa-enabled').checked;
+  const whatsappNumber = (document.getElementById('social-wa-number').value || '').trim().replace(/[^0-9]/g, '');
+  if (whatsappEnabled && !whatsappNumber) {
+    showToast('اكتب رقم الواتساب', 'err');
+    return;
+  }
+  showLoading(true);
+  try {
+    const { doc, setDoc, serverTimestamp } = window.__fs;
+    await setDoc(doc(window.__db, 'settings', 'main'), {
+      whatsappEnabled,
+      whatsappNumber,
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+    showToast('تم حفظ إعدادات الواتساب');
+  } catch (err) {
+    showToast('خطأ: ' + err.message, 'err');
+  } finally {
+    showLoading(false);
+  }
+};
+
+// ============ STATS ============
+function renderStats() {
+  const orders = state.orders;
+  const totalRevenue = orders.reduce((s, o) => s + (o.total || 0), 0);
+  document.getElementById('stat-total-orders').textContent = orders.length;
+  document.getElementById('stat-total-revenue').textContent = totalRevenue.toLocaleString('ar-EG') + ' ج.م';
+  document.getElementById('stat-total-cats').textContent = state.categories.length;
+  document.getElementById('stat-total-prods').textContent = state.products.length;
+
+  
+
+  // Top products
+  const productCounts = {};
+  orders.forEach(o => (o.items || []).forEach(it => {
+    const key = it.name;
+    if (!productCounts[key]) productCounts[key] = { count: 0, revenue: 0 };
+    productCounts[key].count += (it.qty || 1);
+    productCounts[key].revenue += (it.lineTotal || 0);
+  }));
+  const top = Object.entries(productCounts).sort((a, b) => b[1].count - a[1].count).slice(0, 6);
+  const maxTop = Math.max(1, ...top.map(x => x[1].count));
+  document.getElementById('stat-top-products').innerHTML = top.length === 0
+    ? `<p class="text-sm text-ink/40 text-center py-4">لا توجد بيانات</p>`
+    : top.map(([name, d]) => `
+      <div>
+        <div class="flex justify-between text-sm mb-1">
+          <span class="font-bold truncate">${name}</span>
+          <span class="text-ink/55">${d.count} مرة · ${d.revenue.toFixed(0)} ج.م</span>
+        </div>
+        <div class="h-2 bg-ink/5 rounded-full overflow-hidden">
+          <div class="h-full bg-gold rounded-full" style="width:${(d.count / maxTop) * 100}%"></div>
+        </div>
+      </div>`).join('');
+
+  // Sales by category
+  const catSales = {};
+  state.categories.forEach(c => catSales[c.id] = { name: c.name, count: 0, revenue: 0 });
+  orders.forEach(o => (o.items || []).forEach(it => {
+    const prod = state.products.find(p => p.name === it.name);
+    if (prod && catSales[prod.categoryId]) {
+      catSales[prod.categoryId].count += (it.qty || 1);
+      catSales[prod.categoryId].revenue += (it.lineTotal || 0);
+    }
+  }));
+  const catArr = Object.values(catSales).sort((a, b) => b.revenue - a.revenue);
+  const maxCat = Math.max(1, ...catArr.map(x => x.revenue));
+  document.getElementById('stat-sales-by-cat').innerHTML = catArr.length === 0
+    ? `<p class="text-sm text-ink/40 text-center py-4">لا توجد بيانات</p>`
+    : catArr.map(c => `
+      <div>
+        <div class="flex justify-between text-sm mb-1">
+          <span class="font-bold">${c.name}</span>
+          <span class="text-ink/55">${c.count} صنف · ${c.revenue.toFixed(0)} ج.م</span>
+        </div>
+        <div class="h-2 bg-ink/5 rounded-full overflow-hidden">
+          <div class="h-full bg-teal rounded-full" style="width:${(c.revenue / maxCat) * 100}%"></div>
+        </div>
+      </div>`).join('');
+}
+
+// ============ HELPERS ============
+function formatDate(ts, withTime = false) {
+  if (!ts) return '-';
+  let d;
+  if (ts.toDate) d = ts.toDate();
+  else if (ts.seconds) d = new Date(ts.seconds * 1000);
+  else d = new Date(ts);
+  const date = d.toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' });
+  if (withTime) return date + ' · ' + d.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+  return date;
+}
+
+function showLoading(show) {
+  const el = document.getElementById('loading');
+  if (show) { el.classList.remove('hidden'); el.classList.add('flex'); }
+  else { el.classList.add('hidden'); el.classList.remove('flex'); }
+}
+
+let toastTimer = null;
+function showToast(msg, type = 'ok') {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg || 'تم';
+  const inner = t.querySelector('div');
+  if (type === 'err') {
+    inner.className = 'bg-flame text-cream px-5 py-3 rounded-xl shadow-lg font-bold text-sm flex items-center gap-2';
+  } else {
+    inner.className = 'bg-ink text-cream px-5 py-3 rounded-xl shadow-lg font-bold text-sm flex items-center gap-2';
+  }
+  t.classList.remove('hidden');
+  t.firstElementChild.classList.remove('toast-in');
+  void t.offsetWidth;
+  t.firstElementChild.classList.add('toast-in');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.add('hidden'), 2500);
+}
+window.showToast = showToast;
+window.formatDate = formatDate;
+</script>
+
+</body>
+</html>
